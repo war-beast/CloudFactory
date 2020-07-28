@@ -1,0 +1,23 @@
+{
+	"compilerOptions": {
+		"allowSyntheticDefaultImports": true,
+		"module": "ES2015",
+		"moduleResolution": "node",
+		"target": "es6",
+		"noImplicitAny": true,
+		"noImplicitReturns": true,
+		"sourceMap": true,
+		"experimentalDecorators": true,
+		"strictPropertyInitialization": false,
+		"baseUrl": "./Src/",
+		"paths": {
+			"Exceptions/*": [ "exceptions/*" ],
+			"Util/*": [ "util/*" ],
+			"Pages/*": [ "pages/*" ],
+			"Models/*": [ "models/*" ]
+		}
+	},
+	"exclude": [
+		"node_modules"
+	]
+}
