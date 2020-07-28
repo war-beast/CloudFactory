@@ -5,10 +5,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Src\components\main\mainPage.ts" />
     <None Remove="Src\pages\main\init.ts" />
   </ItemGroup>
 
   <ItemGroup>
+    <TypeScriptCompile Include="Src\components\main\mainPage.ts" />
     <TypeScriptCompile Include="Src\pages\main\init.ts" />
   </ItemGroup>
 

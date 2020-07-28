@@ -1,5 +1,5 @@
 ﻿import Vue from "vue";
-import MainPageComponent from "Components/currenciesTable/mainPage.vue";
+import MainPageComponent from "Components/main/mainPage.vue";
 
 class AppCore {
 	private instance: Vue;

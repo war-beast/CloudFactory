@@ -1,7 +1,7 @@
 ﻿<template>
-	<div>Компонент главной страницы</div>
+	<div>
+		<p>{{msg}} Это компонент главной страницы</p>
+	</div>
 </template>
 
-<script lang="ts">
-
-</script>
+<script lang="ts" src="./mainPage.ts"></script>

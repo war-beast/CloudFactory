@@ -40,15 +40,10 @@ let configuration = {
 		// new BundleAnalyzerPlugin(), // Откомментить для анализа бандлов
 		new VueLoaderPlugin(),
 		new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /ru/), // Оставляем только русскую локализацию
-		new webpack.ProvidePlugin({
-			$: "jquery",
-			jQuery: "jquery",
-			"window.jQuery": "jquery"
-		}),
 		new CleanWebpackPlugin([bundleFolder])
 	],
 	resolve: {
-		extensions: [".ts", ".js", ".vue", ".tsx", ".json"],
+		extensions: [".ts", ".js", ".vue", ".json"],
 		alias: {
 			vue$: "vue/dist/vue.esm.js",
 			Vue$: "vue/dist/vue.esm.js",
@@ -56,7 +51,8 @@ let configuration = {
 			Pages: path.resolve(__dirname, "./Src/pages/"),
 			Exceptions: path.resolve(__dirname, "./Src/exceptions/"),
 			Util: path.resolve(__dirname, "./Src/util/"),
-			Models: path.resolve(__dirname, "./Src/models/")
+			Models: path.resolve(__dirname, "./Src/models/"),
+			Components: path.resolve(__dirname, "./Src/components/")
 		}
 	},
 	module: {
