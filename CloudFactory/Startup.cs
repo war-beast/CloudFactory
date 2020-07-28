@@ -1,10 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.IO;
+using CloudFactory.BLL.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -13,17 +10,33 @@ namespace CloudFactory
 {
 	public class Startup
 	{
+		public IConfiguration CustomConfiguration { get; }
+
+		public IConfiguration CommonConfiguration { get; }
+
 		public Startup(IConfiguration configuration)
 		{
-			Configuration = configuration;
-		}
+			CommonConfiguration = configuration;
 
-		public IConfiguration Configuration { get; }
+			var builder = new ConfigurationBuilder()
+				.SetBasePath(Directory.GetCurrentDirectory())
+				.AddJsonFile("application.json", true, true);
+			CustomConfiguration = builder.Build();
+		}
 
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
 		{
+			services.Configure<SiteSettings>(CustomConfiguration.GetSection("siteSettings"));
+
 			services.AddControllersWithViews();
+
+			services.AddControllersWithViews().AddNewtonsoftJson();
+
+			services.AddMvc(option =>
+			{
+				option.EnableEndpointRouting = false;
+			});
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -44,13 +57,11 @@ namespace CloudFactory
 
 			app.UseRouting();
 
-			app.UseAuthorization();
-
-			app.UseEndpoints(endpoints =>
+			app.UseMvc(routes =>
 			{
-				endpoints.MapControllerRoute(
+				routes.MapRoute(
 					name: "default",
-					pattern: "{controller=Home}/{action=Index}/{id?}");
+					template: "{controller=Home}/{action=Index}/{id?}");
 			});
 		}
 	}

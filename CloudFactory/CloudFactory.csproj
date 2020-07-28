@@ -10,8 +10,20 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.6" />
+  </ItemGroup>
+
+  <ItemGroup>
     <TypeScriptCompile Include="Src\components\main\mainPage.ts" />
     <TypeScriptCompile Include="Src\pages\main\init.ts" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="content root\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CloudFactory.BLL\CloudFactory.BLL.csproj" />
   </ItemGroup>
 
 </Project>
