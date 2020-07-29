@@ -16,12 +16,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 import Vue from "vue";
 import Component from "vue-class-component";
 import ApiRequest from "Util/request";
-const fileLoadingUrl = "/api/files/?filename=second.txt";
+const fileLoadingUrl = "/api/files/?filename=first.txt";
+const fileLoadingUrl2 = "/api/files/?filename=second.txt";
 let MainPage = class MainPage extends Vue {
     constructor() {
         super();
         this.msg = "Привет!";
         this.file = null;
+        this.file2 = null;
+        this.file3 = null;
         this.apiRequest = new ApiRequest();
     }
     getFile() {
@@ -33,6 +36,32 @@ let MainPage = class MainPage extends Vue {
                 }
                 else {
                     console.log(`Ошибка загрузки данных по url: ${fileLoadingUrl}`);
+                }
+            });
+        });
+    }
+    getFile2() {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.apiRequest.getData(fileLoadingUrl)
+                .then((result) => {
+                if (result.success) {
+                    this.file2 = result.value;
+                }
+                else {
+                    console.log(`Ошибка загрузки данных по url: ${fileLoadingUrl}`);
+                }
+            });
+        });
+    }
+    getFile3() {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.apiRequest.getData(fileLoadingUrl2)
+                .then((result) => {
+                if (result.success) {
+                    this.file3 = result.value;
+                }
+                else {
+                    console.log(`Ошибка загрузки данных по url: ${fileLoadingUrl2}`);
                 }
             });
         });

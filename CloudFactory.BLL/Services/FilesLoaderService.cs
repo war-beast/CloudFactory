@@ -48,7 +48,7 @@ namespace CloudFactory.BLL.Services
 
 			#endregion
 
-			return await _heavyFileProcessingService.GetFile(fileFullPath: $"{_filesDirectory}/{fileName}");
+			return await Task.Run(() => _heavyFileProcessingService.GetFile(fileFullPath: $"{_filesDirectory}/{fileName}"));
 		}
 
 	}

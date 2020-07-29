@@ -3,11 +3,10 @@ import Component from "vue-class-component";
 import { ApiResult } from "Models/apiResult";
 import ApiRequest from "Util/request";
 
-const fileLoadingUrl = "/api/files/?filename=second.txt";
+const fileLoadingUrl = "/api/files/?filename=first.txt";
 
 @Component
 export default class MainPage extends Vue {
-	private msg: string = "Привет!";
 	private file: string | null = null;
 
 	private readonly apiRequest: ApiRequest;

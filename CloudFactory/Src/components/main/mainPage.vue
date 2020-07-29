@@ -1,9 +1,9 @@
 ﻿<template>
 	<div class="container-fluid">
-		<div>
+		<div class="row">
 			<button type="button" class="btn btn-primary" v-on:click="getFile">Получить файл</button>
 
-			<div v-if="file !== null"class="row text-left">				
+			<div v-if="file !== null" class="text-left">
 				{{file}}
 			</div>
 		</div>
