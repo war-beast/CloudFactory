@@ -1,12 +1,10 @@
 ﻿<template>
 	<div class="container-fluid">
-		<div class="row">
-			<button type="button" class="btn btn-primary" v-on:click="getFile">Получить файл</button>
-
-			<div v-if="file !== null" class="text-left">
-				{{file}}
-			</div>
-		</div>
+		<fileRow v-for="(item, index) in fileRowCount"
+				 v-bind:availableFiles="availableFiles"
+				 v-bind:key="`item__${index}`"/>
+		<button class="btn btn-primary" type="button" v-on:click="addRow">Добавить строку</button>
+		<button class="btn btn-secondary" type="button" v-on:click="deleteRow" v-if="fileRowCount > 1">Удалить строку</button>
 	</div>
 </template>
 

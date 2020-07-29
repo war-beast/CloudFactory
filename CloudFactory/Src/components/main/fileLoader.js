@@ -13,46 +13,44 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import Vue from "vue";
-import Component from "vue-class-component";
+import { Vue, Component, Prop } from "vue-property-decorator";
 import ApiRequest from "Util/request";
-import FileRow from "Components/main/fileLoader.vue";
-const filesListUrl = "/api/files/list";
-let MainPage = class MainPage extends Vue {
+const fileLoadingUrlPrefix = "/api/files/?filename=";
+let FileRow = class FileRow extends Vue {
     constructor() {
         super();
-        this.availableFiles = [];
-        this.fileRowCount = 3;
+        this.file = null;
+        this.fileName = "";
+        this.errorMessage = "";
+        this.loadingProcess = false;
         this.apiRequest = new ApiRequest();
-        setTimeout(() => this.getAvailableFiles(), 0);
     }
-    getAvailableFiles() {
+    getFile() {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.apiRequest.getData(filesListUrl)
+            this.errorMessage = "";
+            this.loadingProcess = true;
+            if (this.fileName === "") {
+                this.errorMessage = "Выберите имя файла в выпадающем списке!";
+                return;
+            }
+            yield this.apiRequest.getData(`${fileLoadingUrlPrefix}${this.fileName}`)
                 .then((result) => {
                 if (result.success) {
-                    this.availableFiles = JSON.parse(result.value);
+                    this.file = result.value;
                 }
                 else {
-                    console.log(`Ошибка загрузки данных по url: ${filesListUrl}`);
+                    console.log(`Ошибка загрузки данных по url: ${fileLoadingUrlPrefix}${this.fileName}`);
                 }
+                this.loadingProcess = false;
             });
         });
     }
-    addRow() {
-        ++this.fileRowCount;
-    }
-    deleteRow() {
-        if (this.fileRowCount > 1)
-            --this.fileRowCount;
-    }
 };
-MainPage = __decorate([
-    Component({
-        components: {
-            fileRow: FileRow
-        }
-    })
-], MainPage);
-export default MainPage;
-//# sourceMappingURL=mainPage.js.map
+__decorate([
+    Prop()
+], FileRow.prototype, "availableFiles", void 0);
+FileRow = __decorate([
+    Component
+], FileRow);
+export default FileRow;
+//# sourceMappingURL=fileLoader.js.map
