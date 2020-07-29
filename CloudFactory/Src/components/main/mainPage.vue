@@ -1,6 +1,12 @@
 ﻿<template>
-	<div>
-		<p>{{msg}} Это компонент главной страницы</p>
+	<div class="container-fluid">
+		<div>
+			<button type="button" class="btn btn-primary" v-on:click="getFile">Получить файл</button>
+
+			<div v-if="file !== null"class="row text-left">				
+				{{file}}
+			</div>
+		</div>
 	</div>
 </template>
 

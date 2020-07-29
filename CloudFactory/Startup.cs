@@ -42,6 +42,7 @@ namespace CloudFactory
 
 			#region custom services
 
+			services.AddSingleton<IHeavyFileProcessingService, HeavyFileProcessingService>();
 			services.AddTransient<IFilesLoaderService, FilesLoaderService>();
 
 			#endregion

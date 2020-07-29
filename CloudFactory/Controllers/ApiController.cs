@@ -1,6 +1,8 @@
 ﻿using CloudFactory.BLL.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Text;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
@@ -27,15 +29,31 @@ namespace CloudFactory.Controllers
 
 		[HttpGet]
 		[Route("list")]
-		public IActionResult GetFilesList()
+		public async Task<IActionResult> GetFilesList()
 		{
-			var files = _filesLoaderService.GetAvailableFilenames();
+			var files = await _filesLoaderService.GetAvailableFilenames();
 
 			return Ok(JsonConvert.SerializeObject(files, Formatting.None, new JsonSerializerSettings
 			{
 				ContractResolver = new CamelCasePropertyNamesContractResolver(),
 				ReferenceLoopHandling = ReferenceLoopHandling.Ignore
 			}));
+		}
+
+		[HttpGet]
+		[Route("")]
+		public async Task<IActionResult> GetFile(string fileName)
+		{
+			#region validation
+
+			if (string.IsNullOrWhiteSpace(fileName))
+				return NotFound();
+
+			#endregion
+
+			var fileContent = await _filesLoaderService.GetFile(fileName);
+
+			return File(fileContent, "text/txt", fileName);
 		}
 	}
 }
