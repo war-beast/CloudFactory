@@ -21,7 +21,7 @@ namespace CloudFactory.BLL.Services
 
 		public HeavyFileProcessingService(IMemoryCache cache)
 		{
-			_cache = cache ?? throw new ArgumentNullException();
+			_cache = cache ?? throw new ArgumentNullException(nameof(cache));
 		}
 
 		#endregion
