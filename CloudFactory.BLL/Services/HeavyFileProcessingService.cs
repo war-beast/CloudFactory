@@ -1,9 +1,8 @@
 ﻿using CloudFactory.BLL.Interfaces;
+using Microsoft.Extensions.Caching.Distributed;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
-using System.Xml;
 
 namespace CloudFactory.BLL.Services
 {
@@ -13,8 +12,17 @@ namespace CloudFactory.BLL.Services
 
 		private const int FileProcessingDelayMilliseconds = 2000;
 		private readonly object _lockObj = new object();
+		private readonly IDistributedCache _distributedCache;
+		private const int DefaultCacheDurationMinutes = 20;
 
-		private readonly Dictionary<string, byte[]> _filesBuffer = new Dictionary<string, byte[]>();
+		#endregion
+
+		#region constructor
+
+		public HeavyFileProcessingService(IDistributedCache distributedCache)
+		{
+			_distributedCache = distributedCache ?? throw new ArgumentNullException(nameof(distributedCache));
+		}
 
 		#endregion
 
@@ -38,9 +46,10 @@ namespace CloudFactory.BLL.Services
 
 		private byte[] LoadFile(string fileFullPath)
 		{
-			if (_filesBuffer.ContainsKey(fileFullPath))
+			byte[] cachedArray = _distributedCache.Get(fileFullPath);
+			if (cachedArray != null)
 			{
-				return _filesBuffer[fileFullPath];
+				return cachedArray;
 			}
 
 			using var fileStream = File.OpenRead(fileFullPath);
@@ -52,7 +61,12 @@ namespace CloudFactory.BLL.Services
 				.GetAwaiter()
 				.GetResult();
 
-			_filesBuffer.Add(fileFullPath, array);
+			_distributedCache.Set(fileFullPath, 
+				array, 
+				new DistributedCacheEntryOptions
+				{
+					SlidingExpiration = TimeSpan.FromMinutes(20)
+				});
 
 			return array;
 		}

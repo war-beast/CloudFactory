@@ -40,6 +40,12 @@ namespace CloudFactory
 				option.EnableEndpointRouting = false;
 			});
 
+			services.AddStackExchangeRedisCache(options =>
+			{
+				options.Configuration = "localhost";
+				options.InstanceName = "RedisInstance";
+			});
+
 			#region custom services
 
 			services.AddSingleton<IHeavyFileProcessingService, HeavyFileProcessingService>();
