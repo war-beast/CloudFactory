@@ -1,9 +1,8 @@
 ﻿using CloudFactory.BLL.Interfaces;
+using Microsoft.Extensions.Caching.Memory;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
-using System.Xml;
 
 namespace CloudFactory.BLL.Services
 {
@@ -11,10 +10,19 @@ namespace CloudFactory.BLL.Services
 	{
 		#region private members
 
+		private readonly IMemoryCache _cache;
 		private const int FileProcessingDelayMilliseconds = 2000;
 		private readonly object _lockObj = new object();
+		private const int DefaultCacheDurationMinutes = 20;
+		
+		#endregion
 
-		private readonly Dictionary<string, byte[]> _filesBuffer = new Dictionary<string, byte[]>();
+		#region constuctor
+
+		public HeavyFileProcessingService(IMemoryCache cache)
+		{
+			_cache = cache ?? throw new ArgumentNullException();
+		}
 
 		#endregion
 
@@ -38,9 +46,9 @@ namespace CloudFactory.BLL.Services
 
 		private byte[] LoadFile(string fileFullPath)
 		{
-			if (_filesBuffer.ContainsKey(fileFullPath))
+			if (_cache.TryGetValue(fileFullPath, out byte[] cachedArray))
 			{
-				return _filesBuffer[fileFullPath];
+				return cachedArray;
 			}
 
 			using var fileStream = File.OpenRead(fileFullPath);
@@ -52,7 +60,7 @@ namespace CloudFactory.BLL.Services
 				.GetAwaiter()
 				.GetResult();
 
-			_filesBuffer.Add(fileFullPath, array);
+			_cache.Set(fileFullPath, array);
 
 			return array;
 		}
