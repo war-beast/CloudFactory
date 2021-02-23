@@ -1,9 +1,13 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
+using StackExchange.Redis;
 
 namespace CloudFactory.BLL.Interfaces
 {
 	public interface IHeavyFileProcessingService
 	{
-		byte[] GetFile(string fileFullPath);
+		Task<byte[]> GetFile(string fileFullPath, CancellationToken token);
+
+		Task RemoveKey(string key, CancellationToken token);
 	}
 }

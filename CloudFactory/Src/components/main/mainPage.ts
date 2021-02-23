@@ -2,9 +2,10 @@
 import Component from "vue-class-component";
 import { ApiResult } from "Models/apiResult";
 import ApiRequest from "Util/request";
-import FileRow from "Components/main/fileLoader.vue"; 
+import FileRow from "Components/main/fileLoader.vue";
 
 const filesListUrl = "/api/files/list";
+const clearCaheUrl = "/api/cache/clear";
 
 @Component({
 	components: {
@@ -24,7 +25,7 @@ export default class MainPage extends Vue {
 		setTimeout(() => this.getAvailableFiles(), 0);
 	}
 
-	private async getAvailableFiles() {
+	private async getAvailableFiles(): Promise<void> {
 		await this.apiRequest.getData(filesListUrl)
 			.then((result: ApiResult) => {
 				if (result.success) {
@@ -42,5 +43,16 @@ export default class MainPage extends Vue {
 	private deleteRow(): void {
 		if (this.fileRowCount > 1)
 			--this.fileRowCount;
+	}
+
+	private async clearCache(): Promise<void> {
+		await this.apiRequest.getData(clearCaheUrl)
+			.then((result: ApiResult) => {
+				if (result.success) {
+					this.availableFiles = JSON.parse(result.value);
+				} else {
+					console.log(`Ошибка очистки кеша: ${filesListUrl}`);
+				}
+			});
 	}
 }

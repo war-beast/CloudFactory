@@ -18,6 +18,7 @@ import Component from "vue-class-component";
 import ApiRequest from "Util/request";
 import FileRow from "Components/main/fileLoader.vue";
 const filesListUrl = "/api/files/list";
+const clearCaheUrl = "/api/cache/clear";
 let MainPage = class MainPage extends Vue {
     constructor() {
         super();
@@ -45,6 +46,19 @@ let MainPage = class MainPage extends Vue {
     deleteRow() {
         if (this.fileRowCount > 1)
             --this.fileRowCount;
+    }
+    clearCache() {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.apiRequest.getData(clearCaheUrl)
+                .then((result) => {
+                if (result.success) {
+                    this.availableFiles = JSON.parse(result.value);
+                }
+                else {
+                    console.log(`Ошибка очистки кеша: ${filesListUrl}`);
+                }
+            });
+        });
     }
 };
 MainPage = __decorate([

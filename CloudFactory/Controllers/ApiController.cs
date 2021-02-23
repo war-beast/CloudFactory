@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
@@ -51,7 +52,7 @@ namespace CloudFactory.Controllers
 
 			#endregion
 
-			var fileContent = await _filesLoaderService.GetFile(fileName);
+			var fileContent = await _filesLoaderService.GetFile(fileName, CancellationToken.None);
 
 			return File(fileContent, "text/txt", fileName);
 		}

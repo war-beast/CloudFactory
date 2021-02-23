@@ -23,6 +23,7 @@
 
   <ItemGroup>
     <Folder Include="content root\" />
+    <Folder Include="wwwroot\bundle\" />
   </ItemGroup>
 
   <ItemGroup>

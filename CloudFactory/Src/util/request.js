@@ -27,6 +27,14 @@ export default class ApiRequest {
             });
         });
     }
+    putData(url, data) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.sendPutRequest(url, data)
+                .then((result) => {
+                return result;
+            });
+        });
+    }
     sendGetRequest(url) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield axios.get(url, {
@@ -43,6 +51,21 @@ export default class ApiRequest {
     sendPostRequest(url, data) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield axios.post(url, data, {
+                headers: {
+                    "Accept": "application/json",
+                    "Content-type": "application/json;charset=utf-8"
+                }
+            }).then((result) => {
+                var res = new ApiResult(true, result.data);
+                return res;
+            }).catch((error) => {
+                return this.getErrorResult(error, url);
+            });
+        });
+    }
+    sendPutRequest(url, data) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield axios.put(url, data, {
                 headers: {
                     "Accept": "application/json",
                     "Content-type": "application/json;charset=utf-8"

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace CloudFactory.BLL.Interfaces
@@ -16,6 +17,8 @@ namespace CloudFactory.BLL.Interfaces
 		/// </summary>
 		/// <param name="fileName">Имя файла</param>
 		/// <returns>Содержимое файла</returns>
-		Task<byte[]> GetFile(string fileName);
+		Task<byte[]> GetFile(string fileName, CancellationToken token);
+
+		Task ClearCache(CancellationToken token);
 	}
 }

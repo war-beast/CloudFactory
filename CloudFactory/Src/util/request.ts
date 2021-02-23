@@ -17,6 +17,13 @@ export default class ApiRequest {
 			});
 	}
 
+	public async putData(url: string, data: string) {
+		return await this.sendPutRequest(url, data)
+			.then((result: ApiResult) => {
+				return result;
+			});
+	}
+
 	private async sendGetRequest(url: string) {
 		return await axios.get(url,
 			{
@@ -32,6 +39,22 @@ export default class ApiRequest {
 
 	private async sendPostRequest(url: string, data: string) {
 		return await axios.post(url,
+			data,
+			{
+				headers: {
+					"Accept": "application/json",
+					"Content-type": "application/json;charset=utf-8"
+				}
+			}).then((result) => {
+				var res = new ApiResult(true, result.data);
+				return res;
+			}).catch((error) => {
+				return this.getErrorResult(error, url);
+			});
+	}
+
+	private async sendPutRequest(url: string, data: string) {
+		return await axios.put(url,
 			data,
 			{
 				headers: {

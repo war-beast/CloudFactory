@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Caching.Distributed;
 using System;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace CloudFactory.BLL.Services
@@ -10,7 +11,7 @@ namespace CloudFactory.BLL.Services
 	{
 		#region private members
 
-		private const int FileProcessingDelayMilliseconds = 2000;
+		private const int FileProcessingDelayMilliseconds = 5000;
 		private readonly object _lockObj = new object();
 		private readonly IDistributedCache _distributedCache;
 		private const int DefaultCacheDurationMinutes = 20;
@@ -26,7 +27,7 @@ namespace CloudFactory.BLL.Services
 
 		#endregion
 
-		public byte[] GetFile(string fileFullPath)
+		public async Task<byte[]> GetFile(string fileFullPath, CancellationToken token)
 		{
 			#region validation
 
@@ -35,38 +36,47 @@ namespace CloudFactory.BLL.Services
 
 			#endregion
 
+			Task<byte[]> array;
+
 			lock (_lockObj)
 			{
-				var array = LoadFile(fileFullPath);
-				return array;
+				array = LoadFile(fileFullPath, token);
+			}
+			
+			return await array;
+		}
+
+		public Task RemoveKey(string key, CancellationToken token)
+		{
+			lock (_lockObj)
+			{
+				return _distributedCache.RemoveAsync(key, token);
 			}
 		}
 
 		#region private members
 
-		private byte[] LoadFile(string fileFullPath)
+		private async Task<byte[]> LoadFile(string fileFullPath, CancellationToken token)
 		{
-			byte[] cachedArray = _distributedCache.Get(fileFullPath);
+			byte[] cachedArray = await _distributedCache.GetAsync(fileFullPath, token);
 			if (cachedArray != null)
 			{
 				return cachedArray;
 			}
 
-			using var fileStream = File.OpenRead(fileFullPath);
+			await using var fileStream = File.OpenRead(fileFullPath);
 			var array = new byte[fileStream.Length];
 			fileStream.Read(array);
 
 			//Пауза, иммитирующая длительный процесс
-			Task.Delay(FileProcessingDelayMilliseconds)
-				.GetAwaiter()
-				.GetResult();
+			await Task.Delay(FileProcessingDelayMilliseconds, token);
 
-			_distributedCache.Set(fileFullPath, 
+			await _distributedCache.SetAsync(fileFullPath, 
 				array, 
 				new DistributedCacheEntryOptions
 				{
-					SlidingExpiration = TimeSpan.FromMinutes(20)
-				});
+					SlidingExpiration = TimeSpan.FromSeconds(30)
+				}, token);
 
 			return array;
 		}

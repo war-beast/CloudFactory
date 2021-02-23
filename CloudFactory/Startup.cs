@@ -31,8 +31,6 @@ namespace CloudFactory
 		{
 			services.Configure<SiteSettings>(CustomConfiguration.GetSection("siteSettings"));
 
-			services.AddControllersWithViews();
-
 			services.AddControllersWithViews().AddNewtonsoftJson();
 
 			services.AddMvc(option =>

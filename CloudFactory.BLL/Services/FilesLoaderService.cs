@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace CloudFactory.BLL.Services
@@ -39,7 +40,7 @@ namespace CloudFactory.BLL.Services
 				.ToList() );
 		}
 
-		public async Task<byte[]> GetFile(string fileName)
+		public async Task<byte[]> GetFile(string fileName, CancellationToken token)
 		{
 			#region validation
 
@@ -48,8 +49,16 @@ namespace CloudFactory.BLL.Services
 
 			#endregion
 
-			return await Task.Run(() => _heavyFileProcessingService.GetFile(fileFullPath: $"{_filesDirectory}/{fileName}"));
+			return await Task.Run(() => _heavyFileProcessingService.GetFile(fileFullPath: $"{_filesDirectory}/{fileName}", token));
 		}
 
+		public async Task ClearCache(CancellationToken token)
+		{
+			var files = await GetAvailableFilenames();
+			foreach (var file in files)
+			{
+				await _heavyFileProcessingService.RemoveKey($"{_filesDirectory}/{file}", token);
+			}
+		}
 	}
 }
